@@ -1,0 +1,38 @@
+== nexe builds for the SmartThings CLI
+
+Cached builds of Node for https://www.npmjs.com/package/nexe[nexe] to be used with nexe for the SmartThings CLI.
+
+This repository is somewhat based on https://github.com/urbdyn/nexe_builds.
+
+== Using this repository
+
+== Creating a new release
+
+Creating a new release of this is somewhat manual at this point.
+
+[arabic]
+. Make your changes, e.g. update the Node version or nexe version.
+. Update the version number in package.json.
+. Create a new release, documenting which version of nexe and Node this release is for.
+. Upload and/or build assets.
+
+=== Uploading or building assets
+
+Trigging a build manually will build and upload the binaries for:
+
+* Windows Intel
+* Linux Intel
+* MacOS Intel
+* MacOS ARM
+
+One can build assets locally as well. This can make things quicker in some cases as builds
+in github take a very long time.
+
+[arabic]
+. Clone this repository
+. Install the exact version of Node you will be building for.
+. Run `npm install`
+. Ensure the machine has the capability of building Node (see https://github.com/nodejs/node/blob/main/BUILDING.md).
+. Set GH_TOKEN to a token with read and write Content scopes.
+. Run `node bin/build.mjs`
+. Once the build is successful, it will be automatically uploaded.

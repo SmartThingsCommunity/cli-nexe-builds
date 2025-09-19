@@ -1,0 +1,55 @@
+# This should probably be "CD" instead or even some alternative name. I feel like
+# we should do some versioning before actually publishing though.
+name: Build
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Node for nexe bundling
+    runs-on: ${{ matrix.os }}
+    # Building on Linux takes a bit over 4 hours.
+    timeout-minutes: 360
+    strategy:
+      matrix:
+        # macos-13 is the most recent Intel available in github actions.
+        os: [macos-13, macos-latest, ubuntu-latest, windows-latest]
+      # This allows builds like Linux to continue when builds like Windows fail.
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.8.0
+
+      - run: npm ci
+
+      - name: Set up Python 3.13.7
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13.7'
+
+      - name: Install nasm
+        if: runner.os == 'Windows'
+        run: choco install nasm
+
+      - name: Check Versions
+        run: |
+          python3 --version
+          node --version
+          echo "Working directory:"
+          pwd
+
+      - name: Build nexe if required
+        run: |
+          node bin/build.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
