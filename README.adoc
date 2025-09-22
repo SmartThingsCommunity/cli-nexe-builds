@@ -6,6 +6,17 @@ This repository is somewhat based on https://github.com/urbdyn/nexe_builds.
 
 == Using this repository
 
+You can use the builds in this repository by including the download directory of the release
+following via the `--remote` command line option to `nexe`. For example, for version 1.0.0, use:
+
+[source,console]
+----
+nexe --remote \
+	https://github.com/SmartThingsCommunity/cli-nexe-builds/releases/download/1.0.0 \
+	<other options>
+----
+
+
 == Creating a new release
 
 Creating a new release of this is somewhat manual at this point.
@@ -14,19 +25,31 @@ Creating a new release of this is somewhat manual at this point.
 . Make your changes, e.g. update the Node version or nexe version.
 . Update the version number in package.json.
 . Create a new release, documenting which version of nexe and Node this release is for.
-. Upload and/or build assets.
+. Upload and/or build assets. (See below)
 
 === Uploading or building assets
 
-Trigging a build manually will build and upload the binaries for:
+Assets can be built locally and uploaded or built in github by triggering the "Build"
+workflow. Currently there is no cross-compilation setup so builds are done for the
+architecture they are built on. As a result, it is currently not possible to build
+ARM Linux builds in GitHub.
+
+==== Building Locally
+
+You can build locally to make things quicker in some cases as builds
+on GitHub take a very long time. Building locally is required for the Linux ARM build.
+
+==== Build Workflow
+
+To build in GitHub, trigger the "Build" workflow manually. Build locally and any
+that have already been uploaded will be skipped.
+
+Building via the "Build" workflow builds for the following targets:
 
 * Windows Intel
 * Linux Intel
-* MacOS Intel
+* MacOS Intel (not working at the moment)
 * MacOS ARM
-
-One can build assets locally as well. This can make things quicker in some cases as builds
-in github take a very long time.
 
 [arabic]
 . Clone this repository
@@ -35,4 +58,4 @@ in github take a very long time.
 . Ensure the machine has the capability of building Node (see https://github.com/nodejs/node/blob/main/BUILDING.md).
 . Set GH_TOKEN to a token with read and write Content scopes.
 . Run `node bin/build.mjs`
-. Once the build is successful, it will be automatically uploaded.
+. Once the build is successful, it will be uploaded.
