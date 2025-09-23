@@ -1,6 +1,6 @@
+import { execSync } from 'node:child_process'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { inspect } from 'node:util'
 
 import { request } from '@octokit/request'
 import { compile } from 'nexe'
@@ -19,6 +19,34 @@ const osByPlatform = {
 const os = osByPlatform[process.platform] ?? process.platform
 const arch = process.arch
 const version = process.version.substring(1)
+
+// llvm needs to be installed and used from homebrew on Intel Macs
+if (os === 'mac' && arch === 'x64') {
+	execSync('brew install llvm@18')
+	const llvm = execSync('brew --prefix llvm@18').toString().trim()
+
+	process.env.LLVM = llvm
+
+	process.env.CC = `${llvm}/bin/clang`
+	process.env.CXX = `${llvm}/bin/clang++`
+	process.env.AR = `${llvm}/bin/llvm-ar`
+	process.env.NM = `${llvm}/bin/llvm-nm`
+	process.env.RANLIB = `${llvm}/bin/llvm-ranlib`
+
+	process.env.CPPFLAGS = `-I${llvm}/include/c++/v1`
+	process.env.CFLAGS = '-arch x86_64'
+	process.env.CXXFLAGS = `-std=c++20 -stdlib=libc++ -arch x86_64 -nostdinc++ -isystem ${llvm}/include/c++/v1`
+	process.env.LDFLAGS =
+		`-stdlib=libc++ -arch x86_64 -L${llvm}/lib -Wl,-rpath,${llvm}/lib -Wl,-rpath,${llvm}/lib/c++ -lc++ -lc++abi`
+
+	process.env.SDKROOT = execSync('xcrun --show-sdk-path').toString().trim()
+
+	process.env.GYP_DEFINES = 'clang=1 use_xcode_clang=0'
+	process.env.CC_host = process.env.CC
+	process.env.CXX_host = process.env.CXX
+	process.env.CC_target = process.env.CC
+	process.env.CXX_target = process.env.CXX
+}
 
 const target = `${os}-${arch}-${version}`
 
@@ -48,7 +76,7 @@ const releaseVersion = packageData.version
 const gitAPIHeaders = {
 	authorization: `token ${ghToken}`,
 }
-const releases = (await request("GET /repos/:owner/:repo/releases", {
+const releases = (await request('GET /repos/:owner/:repo/releases', {
 	headers: gitAPIHeaders,
 	owner,
 	repo,
@@ -86,7 +114,7 @@ if (asset) {
 			await request(
 				`POST /repos/:owner/:repo/releases/:release_id/assets?name=:name`,
 				{
-					baseUrl: "https://uploads.github.com",
+					baseUrl: 'https://uploads.github.com',
 					headers: {
 						'Content-Type': 'application/x-binary',
 						'Content-Length': buildFileContents.length,
