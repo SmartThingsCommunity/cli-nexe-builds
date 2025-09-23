@@ -13,8 +13,8 @@ jobs:
   build:
     name: Build Node for nexe bundling
     runs-on: ${{ matrix.os }}
-    # Building on Linux takes a bit over 4 hours.
-    timeout-minutes: 360
+    # Building on Linux takes a bit over 4 hours. Building on my Intel Mac took almost 6.
+    timeout-minutes: 480
     strategy:
       matrix:
         # macos-13 is the most recent Intel available in github actions.

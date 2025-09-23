@@ -48,7 +48,7 @@ Building via the "Build" workflow builds for the following targets:
 
 * Windows Intel
 * Linux Intel
-* MacOS Intel (not working at the moment)
+* MacOS Intel
 * MacOS ARM
 
 [arabic]
