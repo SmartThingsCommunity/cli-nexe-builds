@@ -1,6 +1,6 @@
 {
 	"name": "@smartthings/cli-nexe-builds",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "Cached nexe builds for the SmartThings CLI.",
 	"homepage": "https://github.com/SmartThingsCommunity/cli-nexe-builds.git#readme",
 	"bugs": {
@@ -16,7 +16,7 @@
 	"main": "none.js",
 	"scripts": {},
 	"dependencies": {
-		"@octokit/request": "^10.0.3",
+		"@octokit/request": "^10.0.16",
 		"nexe": "^5.0.0-beta.4"
 	}
 }
