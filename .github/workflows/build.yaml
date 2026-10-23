@@ -28,14 +28,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: 24.8.0
+          node-version: 24.22.1
 
       - run: npm ci
 
-      - name: Set up Python 3.13.7
+      - name: Set up Python 3.15.1
         uses: actions/setup-python@v6
         with:
-          python-version: '3.13.7'
+          python-version: '3.15.1'
 
       - name: Install nasm
         if: runner.os == 'Windows'
